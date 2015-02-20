@@ -1,11 +1,10 @@
-const requestPromise = require('request-promise');
-const { appConfig } = require('../config');
+import requestPromise from 'request-promise';
 
-const GRAPHQL_ENDPOINT = `http://localhost:${appConfig.PORT}/graphql`;
+import { config } from '../config';
 
-function rp(options) {
-  const url = options.url || GRAPHQL_ENDPOINT;
-  function post(api, body) {
+function request(options: any) {
+  const url = options.url || config.GRAPHQL_ENDPOINT;
+  function post(api: string, body: any) {
     const uri = url + api;
     return requestPromise(uri, {
       method: 'POST',
@@ -17,7 +16,7 @@ function rp(options) {
     });
   }
 
-  function get(api, qs) {
+  function get(api: string, qs: any) {
     const uri = url + api;
     return requestPromise(uri, {
       method: 'GET',
@@ -32,4 +31,4 @@ function rp(options) {
   };
 }
 
-module.exports = rp;
+export { request };

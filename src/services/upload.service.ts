@@ -1,27 +1,34 @@
-const shortid = require('shortid');
-const fs = require('fs');
-const mkdirp = require('mkdirp');
+import fs from 'fs';
+import mkdirp from 'mkdirp';
 
-class Upload {
-  constructor(options) {
-    const { uploadDir } = options;
-    this.uploadDir = uploadDir;
-    mkdirp(uploadDir);
+import { IModels, UserInfo, IServiceOptions } from '../types';
+
+class UploadService {
+  private user: UserInfo;
+  private models: IModels;
+  private dir: string;
+
+  constructor(opts: IServiceOptions & { dir: string }) {
+    this.dir = opts.dir;
+    this.user = opts.user;
+    this.models = opts.models;
+
+    mkdirp(dir);
   }
 
-  getAll(lowdb) {
-    return lowdb.get('uploads').value();
+  public getAll() {
+    return this.models.Upload.find();
   }
 
-  singleUpload(file, lowdb) {
+  public singleUpload(file, lowdb) {
     return this.processUpload(file, lowdb);
   }
 
-  multipleUpload(files, lowdb) {
+  public multipleUpload(files, lowdb) {
     return Promise.all(files.map(file => this.processUpload(file, lowdb)));
   }
 
-  async processUpload(upload, lowdb) {
+  private async processUpload(upload, lowdb) {
     try {
       const { stream, filename, mimetype, encoding } = await upload;
       const { id, filepath } = await this.storeFS({ stream, filename });
@@ -32,7 +39,7 @@ class Upload {
     }
   }
 
-  storeDB(file, lowdb) {
+  private storeDB(file, lowdb) {
     return lowdb
       .get('uploads')
       .push(file)
@@ -40,9 +47,9 @@ class Upload {
       .write();
   }
 
-  storeFS({ stream, filename }) {
+  private storeFS({ stream, filename }) {
     const id = shortid.generate();
-    const filepath = `${this.uploadDir}/${id}-${filename}`;
+    const filepath = `${this.dir}/${id}-${filename}`;
     return new Promise((resolve, reject) => {
       stream.on('error', err => {
         if (stream.truncated) {
@@ -59,5 +66,4 @@ class Upload {
     });
   }
 }
-
-exports.Upload = Upload;
+export { UploadService };

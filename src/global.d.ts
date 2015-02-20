@@ -1,3 +1,8 @@
+declare module 'merge-graphql-schemas' {
+  export function fileLoader(...args: any[]): any;
+  export function mergeResolvers(...args: any[]): any;
+  export function mergeTypes(...args: any[]): any;
+}
 declare module 'apollo-upload-server' {
   import { Request, RequestHandler } from 'express';
   import { GraphQLScalarType } from 'graphql';

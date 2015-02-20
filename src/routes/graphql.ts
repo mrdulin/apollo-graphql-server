@@ -5,10 +5,10 @@ import { apolloUploadExpress } from 'apollo-upload-server';
 import path from 'path';
 
 import { config } from '../config';
-import { schema } from './graphql/schema';
+import { schema } from '../graphql';
 import { CNodeConnector } from './graphql/connectors';
-import { lowdb, collections } from './database/lowdb';
-import { Book, Topic, User, Upload, Comment } from './graphql/models';
+import { Comment, Book, User, Upload } from '../database/models';
+import { BookService, TopicService, CommentService, UploadService, UserService } from '../services';
 import { bypassAuth, AppError } from '../utils';
 
 function graphqlHandler(): Router {
@@ -23,15 +23,14 @@ function graphqlHandler(): Router {
         user,
         req,
         conn: {
-          cnode: new CNodeConnector({ API_ROOT_URL: config.API_ROOT_URL }),
-          lowdb
+          cnode: new CNodeConnector({ API_ROOT_URL: config.API_ROOT_URL })
         },
-        models: {
-          Book: new Book({ collectionName: collections.books.name, user }),
-          Comment: new Comment({ collectionName: collections.comments.name, user }),
-          Topic: new Topic(),
-          User: new User({ collectionName: collections.users.name }),
-          Upload: new Upload({ uploadDir, user })
+        services: {
+          book: new BookService({ models: { Book }, user }),
+          comment: new CommentService({ models: { Comment }, user }),
+          topic: new TopicService(),
+          user: new UserService({ models: { User } }),
+          upload: new UploadService({ models: { Upload }, dir: uploadDir, user })
         }
       },
       formatError: (error: GraphQLError) => {

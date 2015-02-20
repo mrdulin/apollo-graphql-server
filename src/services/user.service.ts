@@ -1,15 +1,17 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const shortid = require('shortid');
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-const { appConfig } = require('../../config');
-const { AppError } = require('../../utils/error');
-class User {
-  constructor(opts) {
-    this.collectionName = opts.collectionName;
+import { config } from '../config';
+import { AppError } from '../utils';
+import { IModels, IServiceOptions } from '../types';
+
+class UserService {
+  public models: IModels;
+  constructor(opts: IServiceOptions) {
+    this.models = opts.models;
   }
 
-  async login(email, password, ctx) {
+  public async login(email: string, password: string) {
     const user = ctx.conn.lowdb
       .get(this.collectionName)
       .find({ email })
@@ -41,15 +43,15 @@ class User {
       {
         user: userInfo
       },
-      appConfig.JWT_SCERET,
-      { expiresIn: appConfig.JWT_EXPIRES }
+      config.JWT_SCERET,
+      { expiresIn: config.JWT_EXPIRES }
     );
 
     userInfo.token = token;
     return userInfo;
   }
 
-  async register(email, name, password, ctx) {
+  public async register(email: string, name: string, password: string) {
     if (!email) {
       throw new AppError(AppError.EMAIL_IS_REQUIRED);
     }
@@ -93,4 +95,4 @@ class User {
   }
 }
 
-exports.User = User;
+export { UserService };

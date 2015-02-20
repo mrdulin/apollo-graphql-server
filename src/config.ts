@@ -1,8 +1,10 @@
 const config = {
   PORT: process.env.PORT || 3200,
+  HOST: process.env.HOST || 'localhost',
   API_ROOT_URL: 'https://cnodejs.org/api/v1',
-  GRAPHQL_ENDPOINT: '/graphql',
-  GRAPHIQL_ENDPOINT: '/graphiql',
+  GRAPHQL_ROUTE: '/graphql',
+  GRAPHIQL_ROUTE: '/graphiql',
+  GRAPHQL_ENDPOINT: '',
   WS_PATH: '/subscriptions',
   ENV: process.env.NODE_ENV || 'development',
   cnodejs: {
@@ -11,5 +13,7 @@ const config = {
   JWT_SCERET: 'what-the-fuck??',
   JWT_EXPIRES: '1d'
 };
+
+config.GRAPHQL_ENDPOINT = `http://${config.HOST}:${config.PORT}/${config.GRAPHQL_ROUTE}`;
 
 export { config };
