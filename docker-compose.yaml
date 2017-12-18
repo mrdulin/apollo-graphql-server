@@ -17,7 +17,7 @@ services:
       retries: 3
       start_period: 5s
 
-  react-apollo-graphql-server:
+  apollo-graphql-server:
     build:
       context: ./
       dockerfile: Dockerfile

@@ -1,7 +1,7 @@
 {
-  "name": "react-apollo-graphql-server",
+  "name": "apollo-graphql-server",
   "version": "1.0.0",
-  "description": "react apollo graphql server",
+  "description": "apollo graphql server",
   "main": "./dist/index.js",
   "dependencies": {
     "apollo-server-express": "^1.3.5",
@@ -58,13 +58,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mrdulin/react-apollo-graphql-server.git"
+    "url": "git+https://github.com/mrdulin/apollo-graphql-server.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mrdulin/react-apollo-graphql-server/issues"
+    "url": "https://github.com/mrdulin/apollo-graphql-server/issues"
   },
-  "homepage": "https://github.com/mrdulin/react-apollo-graphql-server#readme"
+  "homepage": "https://github.com/mrdulin/apollo-graphql-server#readme"
 }
