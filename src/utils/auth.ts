@@ -1,6 +1,8 @@
-const jwt = require('jsonwebtoken');
-const { appConfig } = require('../config');
-const { AppError } = require('./error');
+import jwt from 'jsonwebtoken';
+import { Request } from 'express';
+
+import { config } from '../config';
+import { AppError } from './error';
 
 function auth(context) {
   let req;
@@ -28,7 +30,7 @@ function auth(context) {
   }
 
   try {
-    const { user } = jwt.verify(token, appConfig.JWT_SCERET);
+    const { user } = jwt.verify(token, config.JWT_SCERET);
     return user;
   } catch (error) {
     console.log(error);
@@ -36,7 +38,7 @@ function auth(context) {
   }
 }
 
-function bypassAuth(req) {
+function bypassAuth(req: Request) {
   const { authorization } = req.headers;
   if (authorization) {
     let token;
@@ -53,8 +55,13 @@ function bypassAuth(req) {
       }
     }
 
+    if (!token) {
+      console.error('token does not exists');
+      return;
+    }
+
     try {
-      const { user } = jwt.verify(token, appConfig.JWT_SCERET);
+      const { user } = jwt.verify(token, config.JWT_SCERET);
       return user;
     } catch (error) {
       console.log(error);
@@ -62,5 +69,4 @@ function bypassAuth(req) {
   }
 }
 
-exports.auth = auth;
-exports.bypassAuth = bypassAuth;
+export { auth, bypassAuth };

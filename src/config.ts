@@ -1,4 +1,4 @@
-const appConfig = {
+const config = {
   PORT: process.env.PORT || 3200,
   API_ROOT_URL: 'https://cnodejs.org/api/v1',
   GRAPHQL_ENDPOINT: '/graphql',
@@ -12,4 +12,4 @@ const appConfig = {
   JWT_EXPIRES: '1d'
 };
 
-exports.appConfig = appConfig;
+export { config };

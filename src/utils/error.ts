@@ -1,5 +1,9 @@
+import { IAppErrorOptions } from '../types';
+
 class AppError extends Error {
-  constructor(opts) {
+  public code: number;
+
+  constructor(opts: IAppErrorOptions) {
     super(opts.msg);
     this.code = opts.code;
   }
@@ -16,4 +20,4 @@ Object.assign(AppError, {
   SERVER_INTERNAL_ERROR: { code: 9999, msg: 'Server internal error' }
 });
 
-exports.AppError = AppError;
+export { AppError };
