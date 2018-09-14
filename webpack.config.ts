@@ -8,12 +8,15 @@ const dist = path.resolve(__dirname, 'dist');
 
 const config: webpack.Configuration = {
   target: 'node',
+  node: {
+    __dirname: false
+  },
   entry: {
     app: src
   },
   output: {
     path: dist,
-    filename: 'index.js',
+    filename: '[name].js',
     pathinfo: true
   },
   resolve: {

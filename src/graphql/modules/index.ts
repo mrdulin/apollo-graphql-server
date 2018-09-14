@@ -4,14 +4,16 @@ import { makeExecutableSchema } from 'graphql-tools';
 
 import { logger } from '../../utils';
 
-const typePath = path.join(process.cwd(), './src/graphql/**/*.graphql');
+// const typePath = path.join(__dirname, './src/graphql/**/*.graphql');
+
+const typePath = path.join(__dirname, './**/*.graphql');
 
 logger.info(typePath);
 
 const typesArray = fileLoader(typePath);
 const typeDefs = mergeTypes(typesArray, { all: true });
 
-const resolverArray = fileLoader(path.resolve(process.cwd(), './src/graphql/**/*.resolvers.*'));
+const resolverArray = fileLoader(path.resolve(process.cwd(), './**/*.resolvers.*'));
 const resolvers = mergeResolvers(resolverArray);
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
