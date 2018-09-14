@@ -25,6 +25,7 @@ class BookService {
     if (!this.user) {
       throw new AppError(AppError.Unauthorized);
     }
+    book.authorId = this.user.id;
     return this.Book.create(book);
   }
 }

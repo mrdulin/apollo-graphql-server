@@ -1,10 +1,10 @@
 import webpack from 'webpack';
 import path from 'path';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
+import nodeExternals from 'webpack-node-externals';
 
 const src = path.resolve(__dirname, 'src');
 const dist = path.resolve(__dirname, 'dist');
-const port = 3000;
 
 const config: webpack.Configuration = {
   target: 'node',
@@ -13,7 +13,7 @@ const config: webpack.Configuration = {
   },
   output: {
     path: dist,
-    filename: '[name].js',
+    filename: 'index.js',
     pathinfo: true
   },
   resolve: {
@@ -29,7 +29,8 @@ const config: webpack.Configuration = {
       }
     ]
   },
-  plugins: [new CleanWebpackPlugin(dist)]
+  plugins: [new CleanWebpackPlugin(dist)],
+  externals: [nodeExternals()]
 };
 
 export default config;

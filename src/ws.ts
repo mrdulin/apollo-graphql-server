@@ -7,7 +7,7 @@ import { schema } from './graphql';
 import { logger } from './utils';
 import { config } from './config';
 
-function createSubscriptionServer(server: http.Server | https.Server) {
+function createSubscriptionServer(server: http.Server | https.Server): SubscriptionServer {
   const serverOptions: ServerOptions = {
     execute,
     subscribe,

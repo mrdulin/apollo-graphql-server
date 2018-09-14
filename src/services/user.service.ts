@@ -10,6 +10,10 @@ import { UserInfo } from '../types';
 class UserService {
   constructor(private User: Model<IUserDocument>) {}
 
+  public async findById(id: string) {
+    return this.User.findById(id);
+  }
+
   public async login(email: string, password: string): Promise<UserInfo> {
     const user: IUserDocument | null = await this.User.findOne({ email });
     let match: boolean;

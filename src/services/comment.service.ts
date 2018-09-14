@@ -11,6 +11,7 @@ class CommentService {
     if (!this.user) {
       throw new AppError(AppError.Unauthorized);
     }
+    comment.authorId = this.user.id;
     return this.Comment.create(comment);
   }
 

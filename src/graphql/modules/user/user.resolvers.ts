@@ -8,7 +8,17 @@ const resolvers: IResolvers = {
     register: async (_, { email, name, password }, { services }) => {
       return services.User.register(email, name, password);
     }
+  },
+  User: {
+    __resolveType: obj => {
+      if (obj.createdAt) {
+        return 'UserProfile';
+      }
+      if (obj.token) {
+        return 'UserAuth';
+      }
+    }
   }
 };
 
-export { resolvers };
+export default resolvers;

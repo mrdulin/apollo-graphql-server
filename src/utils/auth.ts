@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { Request } from 'express';
 
 import { config } from '../config';
-import { AppError } from './error';
+import { AppError, logger } from './';
 
 function auth(context) {
   let req;
@@ -30,10 +30,10 @@ function auth(context) {
   }
 
   try {
-    const { user } = jwt.verify(token, config.JWT_SCERET);
+    const user = jwt.verify(token, config.JWT_SCERET);
     return user;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     throw new AppError({ msg: 'authorization failed', code: 1001 });
   }
 }
@@ -51,7 +51,7 @@ function bypassAuth(req: Request) {
       if (/^Bearer$/i.test(schema)) {
         token = credentials;
       } else {
-        console.error('credentials_bad_scheme: Format is Authorization: Bearer [token]');
+        logger.error('credentials_bad_scheme: Format is Authorization: Bearer [token]');
       }
     }
 
@@ -61,10 +61,10 @@ function bypassAuth(req: Request) {
     }
 
     try {
-      const { user } = jwt.verify(token, config.JWT_SCERET);
+      const user = jwt.verify(token, config.JWT_SCERET);
       return user;
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
   }
 }

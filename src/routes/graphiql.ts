@@ -3,14 +3,14 @@ import { graphiqlExpress } from 'apollo-server-express';
 
 import { config } from '../config';
 
-function graphiqlHandler() {
-  const router = Router();
+function graphiqlHandler(): Router {
+  const router: Router = Router();
 
   router.use(
-    config.GRAPHIQL_ENDPOINT,
+    config.GRAPHIQL_ROUTE,
     graphiqlExpress({
-      endpointURL: config.GRAPHQL_ENDPOINT,
-      subscriptionsEndpoint: `ws://localhost:${config.PORT}${config.WS_PATH}`
+      endpointURL: config.GRAPHQL_ROUTE,
+      subscriptionsEndpoint: config.SUBSCRIPTION_ENDPOINT
     })
   );
 

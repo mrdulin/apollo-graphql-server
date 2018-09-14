@@ -8,10 +8,11 @@ import { UserInfo } from '../types';
 import { AppError, logger } from '../utils';
 
 class UploadService {
-  public static uploadDir: string = path.resolve(__dirname, '../../../../uploads');
-
+  public static uploadDir: string = path.resolve(__dirname, '../../uploads');
   constructor(private Upload: Model<IUploadDocument>, private user: UserInfo) {
-    this.mkdirp(UploadService.uploadDir);
+    if (!fs.existsSync(UploadService.uploadDir)) {
+      this.mkdirp(UploadService.uploadDir);
+    }
   }
 
   public getAll(): Promise<IUploadDocument[]> {

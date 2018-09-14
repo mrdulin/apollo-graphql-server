@@ -1,0 +1,22 @@
+type Comment {
+  id: ID!
+  content: String!
+  author: User!
+}
+
+input CommentInput {
+  bookId: ID!
+  content: String!
+}
+
+type Query {
+  commentsByPage(id: ID!, offset: Int, limit: Int): [Comment]!
+}
+
+type Mutation {
+  addComment(comment: CommentInput!): Comment
+}
+
+type Subscription {
+  addComment(bookId: ID!): Comment
+}

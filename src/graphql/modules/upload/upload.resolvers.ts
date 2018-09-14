@@ -18,4 +18,4 @@ const resolvers: IResolvers = {
   }
 };
 
-export { resolvers };
+export default resolvers;

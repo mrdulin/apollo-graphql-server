@@ -2,12 +2,12 @@ import { Schema, model, Model, Document } from 'mongoose';
 
 interface IBookDocument extends Document {
   title: string;
-  author: string;
+  authorId: string;
 }
 
 const bookSchema: Schema = new Schema({
   title: String,
-  author: { type: Schema.Types.ObjectId, ref: 'User' }
+  authorId: String
 });
 
 const Book: Model<IBookDocument> = model<IBookDocument>('Book', bookSchema);

@@ -1,36 +1,21 @@
 type Book {
   id: ID!
   title: String!
-  author: String!
+  description: String
+  author: UserProfile!
   comments: [Comment]!
 }
 
 input BookInput {
   title: String!
-  author: String!
-}
-
-type Comment {
-  id: ID!
-  text: String!
-}
-
-input CommentInput {
-  bookId: ID!
-  text: String!
+  description: String
 }
 
 type Query {
   books: [Book]!
   bookById(id: ID!): Book
-  commentsByPage(id: ID!, offset: Int, limit: Int): [Comment]!
 }
 
 type Mutation {
   addBook(book: BookInput!): Book
-  addComment(comment: CommentInput!): Comment
-}
-
-type Subscription {
-  addComment(bookId: ID!): Comment
 }
