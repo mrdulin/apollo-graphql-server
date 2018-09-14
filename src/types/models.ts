@@ -6,6 +6,7 @@ interface IUserInfo {
   id: string;
   name: string;
   email: string;
+  token?: string;
 }
 
 type UserInfo = IUserInfo | undefined;

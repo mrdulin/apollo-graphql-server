@@ -1,28 +1,31 @@
-import { IModels, IServiceOptions, UserInfo } from '../types';
-import { IBookDocument } from '../database/models';
+import { Model } from 'mongoose';
+
+import { UserInfo } from '../types';
+import { IBookDocument } from '../database/mongodb/models';
+import { AppError } from '../utils';
 
 class BookService {
-  private user: UserInfo;
-  private models: IModels;
-  constructor(opts: IServiceOptions) {
-    this.models = opts.models;
-    this.user = opts.user;
-  }
+  constructor(private Book: Model<IBookDocument>, private user: UserInfo) {}
 
   public getAll(): Promise<IBookDocument[]> {
-    return this.models.Book.find();
+    if (!this.user) {
+      throw new AppError(AppError.Unauthorized);
+    }
+    return this.Book.find().exec();
   }
 
-  public getById(id: string): Promise<IBookDocument> | undefined {
-    if (this.user) {
-      return this.models.Book.findById(id);
+  public getById(id: string): Promise<IBookDocument | null> {
+    if (!this.user) {
+      throw new AppError(AppError.Unauthorized);
     }
+    return this.Book.findById(id).exec();
   }
 
-  public create(book: IBookDocument): Promise<IBookDocument> | undefined {
-    if (this.user) {
-      return this.models.Book.create(book);
+  public create(book: IBookDocument): Promise<IBookDocument> {
+    if (!this.user) {
+      throw new AppError(AppError.Unauthorized);
     }
+    return this.Book.create(book);
   }
 }
 

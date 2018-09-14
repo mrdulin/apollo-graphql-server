@@ -1,35 +1,26 @@
-const { PubSub, withFilter } = require('graphql-subscriptions');
-const { AppError } = require('../../../utils/error');
+import { withFilter } from 'graphql-subscriptions';
+import { IResolvers } from 'graphql-tools';
 
-const pubsub = new PubSub();
+import { pubsub } from '../../../utils';
 
-module.exports = {
+const resolvers: IResolvers = {
   Query: {
-    books: (_, args, { models, conn, user }) => {
-      if (!user) {
-        throw new AppError(AppError.Unauthorized);
-      }
-      return models.Book.getAll({ models, conn });
+    books: (_, args, { services }) => {
+      return services.Book.getAll();
     },
-    bookById: (_, { id }, ctx) => {
-      return ctx.models.Book.getById(id, ctx);
+    bookById: (_, { id }, { services }) => {
+      return services.Book.getById(id);
     },
-    commentsByPage: (_, { id, offset, limit }, { models, conn, user }) => {
-      if (!user) {
-        throw new AppError(AppError.Unauthorized);
-      }
-      return models.Comment.getByPage({ id, offset, limit }, { conn });
+    commentsByPage: (_, { id, offset, limit }, { services }) => {
+      return services.Comment.getByPage(id, offset, limit);
     }
   },
   Mutation: {
-    addBook: (_, { book }, ctx) => {
-      return ctx.models.Book.create(book, ctx);
+    addBook: (_, { book }, { services }) => {
+      return services.Book.create(book);
     },
-    addComment: (_, { comment }, { models, conn, user }) => {
-      if (!user) {
-        throw new AppError(AppError.Unauthorized);
-      }
-      return models.Comment.create(comment, models, conn);
+    addComment: (_, { comment }, { services }) => {
+      return services.Comment.create(comment);
     }
   },
   Subscription: {
@@ -43,3 +34,5 @@ module.exports = {
     }
   }
 };
+
+export { resolvers };

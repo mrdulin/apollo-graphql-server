@@ -1,22 +1,18 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { Model } from 'mongoose';
 
+import { IUserDocument } from '../database/mongodb/models';
 import { config } from '../config';
-import { AppError } from '../utils';
-import { IModels, IServiceOptions } from '../types';
+import { AppError, logger } from '../utils';
+import { UserInfo } from '../types';
 
 class UserService {
-  public models: IModels;
-  constructor(opts: IServiceOptions) {
-    this.models = opts.models;
-  }
+  constructor(private User: Model<IUserDocument>) {}
 
-  public async login(email: string, password: string) {
-    const user = ctx.conn.lowdb
-      .get(this.collectionName)
-      .find({ email })
-      .value();
-    let match;
+  public async login(email: string, password: string): Promise<UserInfo> {
+    const user: IUserDocument | null = await this.User.findOne({ email });
+    let match: boolean;
 
     if (!user) {
       throw new AppError(AppError.USER_NOT_FOUND);
@@ -25,7 +21,7 @@ class UserService {
     try {
       match = await bcrypt.compare(password, user.password);
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       throw new AppError(AppError.SERVER_INTERNAL_ERROR);
     }
 
@@ -33,13 +29,13 @@ class UserService {
       throw new AppError(AppError.INVALID_PASSWORD);
     }
 
-    const userInfo = {
+    const userInfo: UserInfo = {
       id: user.id,
       name: user.name,
       email: user.email
     };
 
-    const token = jwt.sign(
+    const token: string = jwt.sign(
       {
         user: userInfo
       },
@@ -51,7 +47,7 @@ class UserService {
     return userInfo;
   }
 
-  public async register(email: string, name: string, password: string) {
+  public async register(email: string, name: string, password: string): Promise<UserInfo> {
     if (!email) {
       throw new AppError(AppError.EMAIL_IS_REQUIRED);
     }
@@ -59,13 +55,8 @@ class UserService {
       throw new AppError(AppError.PASSWORD_IS_REQUIRED);
     }
     const saltRounds = 12;
-    let user;
-    let hashPwd;
-
-    user = await ctx.conn.lowdb
-      .get(this.collectionName)
-      .find({ email })
-      .value();
+    const user: IUserDocument | null = await this.User.findOne({ email });
+    let hashPwd: string;
 
     if (user) {
       throw new AppError(AppError.EMAIL_ALREADY_EXISTS);
@@ -74,24 +65,17 @@ class UserService {
     try {
       hashPwd = await bcrypt.hash(password, saltRounds);
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       throw new AppError(AppError.SERVER_INTERNAL_ERROR);
     }
 
-    user = {
-      id: shortid.generate(),
+    const newUser = await this.User.create({
       email,
       name,
       password: hashPwd
-    };
+    });
 
-    ctx.conn.lowdb
-      .get(this.collectionName)
-      .push(user)
-      .last()
-      .write();
-
-    return { id: user.id, email: user.email, name: user.name };
+    return { id: newUser._id, email: newUser.email, name: newUser.name };
   }
 }
 

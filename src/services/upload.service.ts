@@ -1,55 +1,64 @@
 import fs from 'fs';
 import mkdirp from 'mkdirp';
+import path from 'path';
+import { Model, Types } from 'mongoose';
 
-import { IModels, UserInfo, IServiceOptions } from '../types';
+import { IUploadDocument } from '../database/mongodb/models';
+import { UserInfo } from '../types';
+import { AppError, logger } from '../utils';
 
 class UploadService {
-  private user: UserInfo;
-  private models: IModels;
-  private dir: string;
+  public static uploadDir: string = path.resolve(__dirname, '../../../../uploads');
 
-  constructor(opts: IServiceOptions & { dir: string }) {
-    this.dir = opts.dir;
-    this.user = opts.user;
-    this.models = opts.models;
-
-    mkdirp(dir);
+  constructor(private Upload: Model<IUploadDocument>, private user: UserInfo) {
+    this.mkdirp(UploadService.uploadDir);
   }
 
-  public getAll() {
-    return this.models.Upload.find();
+  public getAll(): Promise<IUploadDocument[]> {
+    if (!this.user) {
+      throw new AppError(AppError.Unauthorized);
+    }
+    return this.Upload.find().exec();
   }
 
-  public singleUpload(file, lowdb) {
-    return this.processUpload(file, lowdb);
+  public singleUpload(file) {
+    if (!this.user) {
+      throw new AppError(AppError.Unauthorized);
+    }
+    return this.processUpload(file);
   }
 
-  public multipleUpload(files, lowdb) {
-    return Promise.all(files.map(file => this.processUpload(file, lowdb)));
+  public multipleUpload(files) {
+    if (!this.user) {
+      throw new AppError(AppError.Unauthorized);
+    }
+    return Promise.all(files.map(file => this.processUpload(file)));
   }
 
-  private async processUpload(upload, lowdb) {
+  private async processUpload(upload) {
     try {
       const { stream, filename, mimetype, encoding } = await upload;
       const { id, filepath } = await this.storeFS({ stream, filename });
-      return this.storeDB({ id, filepath, mimetype, encoding, filename }, lowdb);
+      const newFile = await this.Upload.create({ _id: id, filepath, mimetype, encoding, filename });
+      return newFile;
     } catch (err) {
-      console.log('processUpload error');
+      logger.error(err);
       throw new Error(err);
     }
   }
 
-  private storeDB(file, lowdb) {
-    return lowdb
-      .get('uploads')
-      .push(file)
-      .last()
-      .write();
+  private mkdirp(dir: string): void {
+    mkdirp(dir, (err: NodeJS.ErrnoException) => {
+      if (err) {
+        logger.error(err);
+      }
+      logger.info('Make upload directory successfully');
+    });
   }
 
-  private storeFS({ stream, filename }) {
-    const id = shortid.generate();
-    const filepath = `${this.dir}/${id}-${filename}`;
+  private storeFS({ stream, filename }): Promise<{ id: Types.ObjectId; filepath: string }> {
+    const id = Types.ObjectId();
+    const filepath = `${UploadService.uploadDir}/${id.toString()}-${filename}`;
     return new Promise((resolve, reject) => {
       stream.on('error', err => {
         if (stream.truncated) {

@@ -1,28 +1,21 @@
-const { GraphQLUpload } = require('apollo-upload-server');
-const { AppError } = require('../../../utils/error');
+import { GraphQLUpload } from 'apollo-upload-server';
+import { IResolvers } from 'graphql-tools';
 
-module.exports = {
+const resolvers: IResolvers = {
   Upload: GraphQLUpload,
   Query: {
-    uploads: (root, args, { models, conn, user }) => {
-      if (!user) {
-        throw new AppError(AppError.Unauthorized);
-      }
-      return models.Upload.getAll(conn.lowdb);
+    uploads: (_, args, { services }) => {
+      return services.Upload.getAll();
     }
   },
   Mutation: {
-    singleUpload: (root, { file }, { models, conn, user }) => {
-      if (!user) {
-        throw new AppError(AppError.Unauthorized);
-      }
-      return models.Upload.singleUpload(file, conn.lowdb);
+    singleUpload: (_, { file }, { services }) => {
+      return services.Upload.singleUpload(file);
     },
-    multipleUpload: async (root, { files }, { models, conn, user }) => {
-      if (!user) {
-        throw new AppError(AppError.Unauthorized);
-      }
-      return models.Upload.multipleUpload(files, conn.lowdb);
+    multipleUpload: async (_, { files }, { services }) => {
+      return services.Upload.multipleUpload(files);
     }
   }
 };
+
+export { resolvers };

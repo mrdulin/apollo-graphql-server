@@ -9,6 +9,5 @@
     "ordered-imports": false,
     "object-literal-sort-keys": false,
     "arrow-parens": false
-  },
-  "rulesDirectory": []
+  }
 }

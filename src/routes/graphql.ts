@@ -2,39 +2,40 @@ import { Router, Request } from 'express';
 import { graphqlExpress, ExpressGraphQLOptionsFunction, GraphQLOptions } from 'apollo-server-express';
 import { GraphQLError } from 'graphql';
 import { apolloUploadExpress } from 'apollo-upload-server';
-import path from 'path';
 
 import { config } from '../config';
 import { schema } from '../graphql';
-import { CNodeConnector } from './graphql/connectors';
+// import { CNodeConnector } from './graphql/connectors';
 import { Comment, Book, User, Upload } from '../database/models';
 import { BookService, TopicService, CommentService, UploadService, UserService } from '../services';
-import { bypassAuth, AppError } from '../utils';
+import { bypassAuth, AppError, logger } from '../utils';
 
 function graphqlHandler(): Router {
   const router: Router = Router();
-  const uploadDir: string = path.resolve(__dirname, '../../../../uploads');
 
   const expressGraphQLOptionsFunction: ExpressGraphQLOptionsFunction = (req?: Request): GraphQLOptions => {
-    const user = bypassAuth(req);
+    let user;
+    if (req) {
+      user = bypassAuth(req);
+    }
     const graphqlOptions: GraphQLOptions = {
       schema,
       context: {
         user,
         req,
         conn: {
-          cnode: new CNodeConnector({ API_ROOT_URL: config.API_ROOT_URL })
+          // cnode: new CNodeConnector({ API_ROOT_URL: config.API_ROOT_URL })
         },
         services: {
-          book: new BookService({ models: { Book }, user }),
-          comment: new CommentService({ models: { Comment }, user }),
+          book: new BookService(Book, user),
+          comment: new CommentService(Comment, user),
           topic: new TopicService(),
-          user: new UserService({ models: { User } }),
-          upload: new UploadService({ models: { Upload }, dir: uploadDir, user })
+          user: new UserService(User),
+          upload: new UploadService(Upload, user)
         }
       },
       formatError: (error: GraphQLError) => {
-        console.log('formatError');
+        logger.info('formatError');
         if (error.originalError) {
           const { code, message } = error.originalError as AppError;
           return { code, message };
