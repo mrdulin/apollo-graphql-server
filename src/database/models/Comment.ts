@@ -1,4 +1,4 @@
-import { Schema, model, Model, Document } from 'mongoose';
+import { Schema, model, Model, Document } from "mongoose";
 
 interface ICommentDocument extends Document {
   content: string;
@@ -12,6 +12,9 @@ const commentSchema = new Schema({
   authorId: String
 });
 
-const Comment: Model<ICommentDocument> = model<ICommentDocument>('Comment', commentSchema);
+const Comment: Model<ICommentDocument> = model<ICommentDocument>(
+  "Comment",
+  commentSchema
+);
 
 export { ICommentDocument, Comment };

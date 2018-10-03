@@ -1,13 +1,14 @@
-import webpack from 'webpack';
-import path from 'path';
-import CleanWebpackPlugin from 'clean-webpack-plugin';
-import nodeExternals from 'webpack-node-externals';
+import webpack from "webpack";
+import path from "path";
+import CleanWebpackPlugin from "clean-webpack-plugin";
+import nodeExternals from "webpack-node-externals";
+import CopyWebpackPlugin from "copy-webpack-plugin";
 
-const src = path.resolve(__dirname, 'src');
-const dist = path.resolve(__dirname, 'dist');
+const src = path.resolve(__dirname, "src");
+const dist = path.resolve(__dirname, "dist");
 
 const config: webpack.Configuration = {
-  target: 'node',
+  target: "node",
   node: {
     __dirname: false
   },
@@ -16,23 +17,32 @@ const config: webpack.Configuration = {
   },
   output: {
     path: dist,
-    filename: '[name].js',
+    filename: "[name].js",
     pathinfo: true
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: [".ts", ".js"]
   },
-  devtool: 'source-map',
+  devtool: "source-map",
   module: {
     rules: [
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        use: 'ts-loader'
+        use: "ts-loader"
       }
     ]
   },
-  plugins: [new CleanWebpackPlugin(dist)],
+  plugins: [
+    new CleanWebpackPlugin(dist),
+    new CopyWebpackPlugin([
+      {
+        from: "./src/graphql/modules/**/*.graphql",
+        to: `${dist}/typeDefs/`,
+        flatten: true
+      }
+    ])
+  ],
   externals: [nodeExternals()]
 };
 

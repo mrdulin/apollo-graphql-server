@@ -1,4 +1,4 @@
-import { Schema, model, Model, Document } from 'mongoose';
+import { Schema, model, Model, Document } from "mongoose";
 
 interface IUploadDocument extends Document {
   filepath: string;
@@ -14,6 +14,9 @@ const uploadSchema: Schema = new Schema({
   filename: String
 });
 
-const Upload: Model<IUploadDocument> = model<IUploadDocument>('Upload', uploadSchema);
+const Upload: Model<IUploadDocument> = model<IUploadDocument>(
+  "Upload",
+  uploadSchema
+);
 
 export { IUploadDocument, Upload };

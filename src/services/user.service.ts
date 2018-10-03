@@ -1,11 +1,11 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { Model } from 'mongoose';
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { Model } from "mongoose";
 
-import { IUserDocument } from '../database/mongodb/models';
-import { config } from '../config';
-import { AppError, logger } from '../utils';
-import { UserInfo } from '../types';
+import { IUserDocument } from "../database/models";
+import { config } from "../config";
+import { AppError, logger } from "../utils";
+import { UserInfo } from "../types";
 
 class UserService {
   constructor(private User: Model<IUserDocument>) {}
@@ -33,13 +33,21 @@ class UserService {
       throw new AppError(AppError.INVALID_PASSWORD);
     }
 
-    const userInfo: UserInfo = { id: user.id, name: user.name, email: user.email };
+    const userInfo: UserInfo = {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    };
 
     userInfo.token = this.genJWT(userInfo);
     return userInfo;
   }
 
-  public async register(email: string, name: string, password: string): Promise<UserInfo> {
+  public async register(
+    email: string,
+    name: string,
+    password: string
+  ): Promise<UserInfo> {
     if (!email) {
       throw new AppError(AppError.EMAIL_IS_REQUIRED);
     }
@@ -67,13 +75,19 @@ class UserService {
       password: hashPwd
     });
 
-    const userInfo: UserInfo = { id: newUser._id, email: newUser.email, name: newUser.name };
+    const userInfo: UserInfo = {
+      id: newUser._id,
+      email: newUser.email,
+      name: newUser.name
+    };
     userInfo.token = this.genJWT(userInfo);
     return userInfo;
   }
 
   private genJWT(payload: string | Buffer | object): string {
-    return jwt.sign(payload, config.JWT_SCERET, { expiresIn: config.JWT_EXPIRES });
+    return jwt.sign(payload, config.JWT_SCERET, {
+      expiresIn: config.JWT_EXPIRES
+    });
   }
 }
 

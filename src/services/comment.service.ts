@@ -1,11 +1,14 @@
-import { Model } from 'mongoose';
+import { Model } from "mongoose";
 
-import { UserInfo } from '../types';
-import { ICommentDocument } from '../database/mongodb/models';
-import { AppError } from '../utils';
+import { UserInfo } from "../types";
+import { ICommentDocument } from "../database/models";
+import { AppError } from "../utils";
 
 class CommentService {
-  constructor(private Comment: Model<ICommentDocument>, private user: UserInfo) {}
+  constructor(
+    private Comment: Model<ICommentDocument>,
+    private user: UserInfo
+  ) {}
 
   public create(comment: ICommentDocument) {
     if (!this.user) {
@@ -15,7 +18,10 @@ class CommentService {
     return this.Comment.create(comment);
   }
 
-  public getByBookId(id: string, limit: number = 10): Promise<ICommentDocument[]> {
+  public getByBookId(
+    id: string,
+    limit: number = 10
+  ): Promise<ICommentDocument[]> {
     if (!this.user) {
       throw new AppError(AppError.Unauthorized);
     }
@@ -24,7 +30,11 @@ class CommentService {
       .exec();
   }
 
-  public getByPage(id: string, offset: number = 0, limit: number = 10): Promise<ICommentDocument[]> {
+  public getByPage(
+    id: string,
+    offset: number = 0,
+    limit: number = 10
+  ): Promise<ICommentDocument[]> {
     if (!this.user) {
       throw new AppError(AppError.Unauthorized);
     }

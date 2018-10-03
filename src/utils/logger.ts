@@ -1,5 +1,5 @@
-import { createLogger, transports, format, Logger } from 'winston';
-import { TransformableInfo } from 'logform';
+import { createLogger, transports, format, Logger } from "winston";
+import { TransformableInfo } from "logform";
 
 function createAppLogger(): Logger {
   const { combine, timestamp, printf, colorize } = format;
@@ -10,8 +10,10 @@ function createAppLogger(): Logger {
       timestamp(),
       printf(
         (info: TransformableInfo): string => {
-          const label: string = info.label ? ' ' + info.label + ' ' : '';
-          return `${info.timestamp}${label}[${info.level}] : ${JSON.stringify(info.message)}`;
+          const label: string = info.label ? " " + info.label + " " : "";
+          return `${info.timestamp}${label}[${info.level}] : ${JSON.stringify(
+            info.message
+          )}`;
         }
       )
     ),

@@ -1,7 +1,7 @@
-import { Router } from 'express';
-import { graphiqlExpress } from 'apollo-server-express';
+import { Router } from "express";
+import { graphiqlExpress } from "apollo-server-express";
 
-import { config } from '../config';
+import { config } from "../config";
 
 function graphiqlHandler(): Router {
   const router: Router = Router();

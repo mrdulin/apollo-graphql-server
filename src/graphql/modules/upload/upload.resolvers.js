@@ -1,7 +1,6 @@
-import { GraphQLUpload } from 'apollo-upload-server';
-import { IResolvers } from 'graphql-tools';
+const { GraphQLUpload } = require('apollo-upload-server');
 
-const resolvers: IResolvers = {
+const resolvers = {
   Upload: GraphQLUpload,
   Query: {
     uploads: (_, args, { services }) => {
@@ -18,4 +17,4 @@ const resolvers: IResolvers = {
   }
 };
 
-export default resolvers;
+module.exports = resolvers;

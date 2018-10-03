@@ -1,6 +1,4 @@
-import { IResolvers } from 'graphql-tools';
-
-const resolvers: IResolvers = {
+const resolvers = {
   Mutation: {
     login: async (_, { email, password }, { services }) => {
       return services.User.login(email, password);
@@ -21,4 +19,4 @@ const resolvers: IResolvers = {
   }
 };
 
-export default resolvers;
+module.exports = resolvers;

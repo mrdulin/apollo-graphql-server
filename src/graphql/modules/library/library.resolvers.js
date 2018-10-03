@@ -1,6 +1,4 @@
-import { IResolvers } from 'graphql-tools';
-
-const resolvers: IResolvers = {
+const resolvers = {
   Book: {
     comments: (book, args, { services }) => {
       return services.Comment.getByBookId(book.id);
@@ -24,4 +22,4 @@ const resolvers: IResolvers = {
   }
 };
 
-export default resolvers;
+module.exports = resolvers;

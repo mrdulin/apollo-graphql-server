@@ -1,8 +1,8 @@
-import { Model } from 'mongoose';
+import { Model } from "mongoose";
 
-import { UserInfo } from '../types';
-import { IBookDocument } from '../database/mongodb/models';
-import { AppError } from '../utils';
+import { UserInfo } from "../types";
+import { IBookDocument } from "../database/models";
+import { AppError } from "../utils";
 
 class BookService {
   constructor(private Book: Model<IBookDocument>, private user: UserInfo) {}

@@ -1,23 +1,25 @@
-import { SubscriptionServer, ServerOptions } from 'subscriptions-transport-ws';
-import { execute, subscribe } from 'graphql';
-import http from 'http';
-import https from 'https';
+import { SubscriptionServer, ServerOptions } from "subscriptions-transport-ws";
+import { execute, subscribe } from "graphql";
+import http from "http";
+import https from "https";
 
-import { schema } from './graphql';
-import { logger } from './utils';
-import { config } from './config';
+import { schema } from "./graphql";
+import { logger } from "./utils";
+import { config } from "./config";
 
-function createSubscriptionServer(server: http.Server | https.Server): SubscriptionServer {
+function createSubscriptionServer(
+  server: http.Server | https.Server
+): SubscriptionServer {
   const serverOptions: ServerOptions = {
     execute,
     subscribe,
     schema,
     onConnect: (connectionParams: any) => {
-      logger.info('onConnect');
+      logger.info("onConnect");
       return connectionParams;
     },
     onOperation: (message: any, params: any) => {
-      logger.info('onOperation');
+      logger.info("onOperation");
       return {
         ...params,
         context: {
@@ -26,14 +28,17 @@ function createSubscriptionServer(server: http.Server | https.Server): Subscript
       };
     },
     onOperationComplete: () => {
-      logger.info('onOperationComplete');
+      logger.info("onOperationComplete");
     },
     onDisconnect: () => {
-      logger.info('onDisconnect');
+      logger.info("onDisconnect");
     }
   };
 
-  return new SubscriptionServer(serverOptions, { server, path: config.WS_ROUTE });
+  return new SubscriptionServer(serverOptions, {
+    server,
+    path: config.WS_ROUTE
+  });
 }
 
 export { createSubscriptionServer };

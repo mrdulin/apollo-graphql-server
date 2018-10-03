@@ -1,4 +1,4 @@
-import { Schema, model, Model, Document } from 'mongoose';
+import { Schema, model, Model, Document } from "mongoose";
 
 interface IBookDocument extends Document {
   title: string;
@@ -10,6 +10,6 @@ const bookSchema: Schema = new Schema({
   authorId: String
 });
 
-const Book: Model<IBookDocument> = model<IBookDocument>('Book', bookSchema);
+const Book: Model<IBookDocument> = model<IBookDocument>("Book", bookSchema);
 
 export { Book, IBookDocument };

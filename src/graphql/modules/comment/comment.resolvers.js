@@ -1,9 +1,7 @@
-import { IResolvers } from 'graphql-tools';
-import { withFilter } from 'graphql-subscriptions';
+const { withFilter } = require('graphql-subscriptions');
+const { pubsub } = require('../../pubsub');
 
-import { pubsub } from '../../../utils';
-
-const resolvers: IResolvers = {
+const resolvers = {
   Query: {
     commentsByPage: (_, { id, offset, limit }, { services }) => {
       return services.Comment.getByPage(id, offset, limit);
@@ -26,4 +24,4 @@ const resolvers: IResolvers = {
   }
 };
 
-export default resolvers;
+module.exports = resolvers;
