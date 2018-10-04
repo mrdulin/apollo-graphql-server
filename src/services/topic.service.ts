@@ -1,10 +1,22 @@
+import request from "request-promise";
 class TopicService {
-  public getHomeTopics(qs, ctx) {
-    return ctx.conn.cnode.get("/topics", qs).then(res => res.data || []);
+  private baseUrl: string;
+  constructor(opts) {
+    this.baseUrl = opts.baseUrl;
+  }
+  public async getHomeTopics(qs: any) {
+    return request
+      .get(`${this.baseUrl}/topics`, {
+        qs,
+        json: true
+      })
+      .then(res => {
+        return res.data || [];
+      });
   }
 
-  public getById(id, ctx) {
-    return ctx.conn.cnode.get(`/topic/${id}`).then(res => res.data || {});
+  public async getById(id: string) {
+    return request.get(`/topic/${id}`).then(res => res.data || {});
   }
 }
 export { TopicService };

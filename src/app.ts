@@ -8,6 +8,7 @@ import { config } from "./config";
 import { logger } from "./utils";
 import { createSubscriptionServer } from "./ws";
 import { graphiqlHandler, graphqlHandler } from "./routes";
+import pkg from "../package.json";
 
 async function bootstrap(): Promise<http.Server> {
   const app: express.Application = express();
@@ -16,9 +17,14 @@ async function bootstrap(): Promise<http.Server> {
   app.use(cors());
   app.use(bodyParser.json());
   app.use(graphqlHandler());
-  if (process.env.NODE_ENV !== "production") {
+
+  if (config.ENABLE_GRAPHIQL) {
     app.use(graphiqlHandler());
   }
+
+  app.get("/version", (req, res) => {
+    res.send({ version: pkg.version });
+  });
 
   return httpServer.listen(config.PORT, () => {
     if (process.env.NODE_ENV !== "production") {

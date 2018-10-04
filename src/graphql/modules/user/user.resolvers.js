@@ -15,6 +15,7 @@ const resolvers = {
       if (obj.token) {
         return 'UserAuth';
       }
+      return null;
     }
   }
 };

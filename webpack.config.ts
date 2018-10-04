@@ -40,6 +40,11 @@ const config: webpack.Configuration = {
         from: "./src/graphql/modules/**/*.graphql",
         to: `${dist}/typeDefs/`,
         flatten: true
+      },
+      {
+        from: "./src/graphql/modules/**/*.resolvers.*",
+        to: `${dist}/resolvers/`,
+        flatten: true
       }
     ])
   ],

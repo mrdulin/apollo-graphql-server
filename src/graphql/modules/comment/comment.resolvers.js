@@ -1,6 +1,7 @@
 const { withFilter } = require('graphql-subscriptions');
-const { pubsub } = require('../../pubsub');
+const { PubSub } = require('graphql-subscriptions');
 
+const pubsub = new PubSub();
 const resolvers = {
   Query: {
     commentsByPage: (_, { id, offset, limit }, { services }) => {

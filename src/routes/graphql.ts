@@ -9,7 +9,6 @@ import { apolloUploadExpress } from "apollo-upload-server";
 
 import { config } from "../config";
 import { schema } from "../graphql";
-// import { CNodeConnector } from './graphql/connectors';
 import { Comment, Book, User, Upload } from "../database/models";
 import {
   BookService,
@@ -22,6 +21,9 @@ import { bypassAuth, AppError, logger } from "../utils";
 
 function graphqlHandler(): Router {
   const router: Router = Router();
+  const {
+    cnodejs: { baseUrl }
+  } = config;
 
   const expressGraphQLOptionsFunction: ExpressGraphQLOptionsFunction = (
     req?: Request
@@ -31,13 +33,10 @@ function graphqlHandler(): Router {
       schema,
       context: {
         req,
-        conn: {
-          // cnode: new CNodeConnector({ API_ROOT_URL: config.API_ROOT_URL })
-        },
         services: {
           Book: new BookService(Book, user),
           Comment: new CommentService(Comment, user),
-          Topic: new TopicService(),
+          Topic: new TopicService({ baseUrl }),
           User: new UserService(User),
           Upload: new UploadService(Upload, user)
         }
@@ -53,7 +52,7 @@ function graphqlHandler(): Router {
 
         return new Error("Internal server error");
       },
-      tracing: true
+      tracing: process.env.NODE_ENV !== "production"
     };
     return graphqlOptions;
   };

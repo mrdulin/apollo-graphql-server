@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.4'
 
 services:
   mongo:
@@ -8,3 +8,23 @@ services:
       - .env
     ports:
       - 27017:27017
+    volumes:
+      - ./data:/data/db
+    healthcheck:
+      test: curl -f http://localhost:27017 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  react-apollo-graphql-server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: rags:latest
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    ports:
+      - 3200:3100

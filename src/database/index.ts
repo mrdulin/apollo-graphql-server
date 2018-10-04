@@ -5,13 +5,13 @@ import { logger } from "../utils";
 
 async function MongoConnect(): Promise<Mongoose | undefined> {
   const {
-    MONGO_HOST,
-    MONGO_PORT,
+    MONGODB_HOST,
+    MONGODB_PORT,
     MONGODB_APPLICATION_DATABASE,
     MONGODB_APPLICATION_USER,
     MONGODB_APPLICATION_PASS
   } = config;
-  const uri: string = `mongodb://${MONGODB_APPLICATION_USER}:${MONGODB_APPLICATION_PASS}@${MONGO_HOST}:${MONGO_PORT}/${MONGODB_APPLICATION_DATABASE}`;
+  const uri: string = `mongodb://${MONGODB_APPLICATION_USER}:${MONGODB_APPLICATION_PASS}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_APPLICATION_DATABASE}`;
   mongoose.connection
     .on("connecting", () => {
       logger.info(
