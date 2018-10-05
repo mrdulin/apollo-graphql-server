@@ -3,3 +3,4 @@ dist/
 access.log
 uploads
 .env
+data/
