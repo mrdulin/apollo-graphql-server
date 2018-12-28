@@ -47,7 +47,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=development",
-    "build:graphql": "tsc -",
     "start": "node ./dist/app.js",
     "dev": "node -r ts-node/register ./src/index.ts"
   },

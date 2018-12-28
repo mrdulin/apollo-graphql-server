@@ -33,21 +33,9 @@ class UserService {
       throw new AppError(AppError.INVALID_PASSWORD);
     }
 
-    const userInfo: UserInfo = {
-      id: user.id,
-      name: user.name,
-      email: user.email
-    };
+    const userInfo: UserInfo = { id: user.id, name: user.name, email: user.email };
 
-    const token: string = jwt.sign(
-      {
-        user: userInfo
-      },
-      config.JWT_SCERET,
-      { expiresIn: config.JWT_EXPIRES }
-    );
-
-    userInfo.token = token;
+    userInfo.token = this.genJWT(userInfo);
     return userInfo;
   }
 
@@ -79,7 +67,13 @@ class UserService {
       password: hashPwd
     });
 
-    return { id: newUser._id, email: newUser.email, name: newUser.name };
+    const userInfo: UserInfo = { id: newUser._id, email: newUser.email, name: newUser.name };
+    userInfo.token = this.genJWT(userInfo);
+    return userInfo;
+  }
+
+  private genJWT(payload: string | Buffer | object): string {
+    return jwt.sign(payload, config.JWT_SCERET, { expiresIn: config.JWT_EXPIRES });
   }
 }
 
